@@ -17,9 +17,9 @@
 //
 void show_code_task(interface infrared_if client remote, interface seven_seg_if client display) {
     const uint8_t hex[] = "0123456789ABCDEF";
-    // 7-segment representations of the button names
-    const uint8_t key[] = "dpu?SUS?LEr?0db?123?456?789";
-    uint32_t toggle = 0; // activity indicator makes repeat codes visible
+    // 7-segment representations of Adafruit Mini button names
+    const uint8_t key[] = "dpu-SUS-LEr-0db-123-456-789";
+    uint32_t toggle = 0; // toggle indicator so repeat codes are visible
 
     display.setText("----");
     uint32_t display_busy = 1;
@@ -35,7 +35,7 @@ void show_code_task(interface infrared_if client remote, interface seven_seg_if 
             if ( codes_ready && (IR_ADDR_LO==buf[1]) && (IR_ADDR_HI==buf[2])) {
                 // new codes and address matches
                 uint8_t text[4];
-                text[0] = (sizeof(key)>buf[0])? key[buf[0]] : '?';
+                text[0] = (sizeof(key)>buf[0])? key[buf[0]] : '-';
                 text[1] = (++toggle&1)? '-' : '_';
                 text[2] = hex[buf[0]>>4]; // code in hex
                 text[3] = hex[buf[0]&15];
@@ -52,7 +52,7 @@ void show_code_task(interface infrared_if client remote, interface seven_seg_if 
 
 
 // ---------------------------------------------------------
-// main - xCore ping sensor test
+// main - infrared remote driver test
 //
 in port sensor_pin = XS1_PORT_1N; // j7.17
 port txd_pin       = XS1_PORT_4C; // j7.5 [6, 7, 8]
