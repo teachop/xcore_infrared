@@ -47,7 +47,7 @@ void show_code_task(interface infrared_if client remote, interface seven_seg_if 
 // main - xCore ping sensor test
 //
 in port sensor_pin = XS1_PORT_1N; // j7.17
-port txd_pin = XS1_PORT_4C; // j7.5 [6, 7, 8]
+port txd_pin       = XS1_PORT_4C; // j7.5 [6, 7, 8]
 
 int main() {
     interface seven_seg_if display;

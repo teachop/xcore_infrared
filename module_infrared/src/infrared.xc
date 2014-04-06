@@ -21,7 +21,7 @@ void infrared_task(in port sensor, interface infrared_if server remote) {
     uint32_t can_repeat = 0;
     uint32_t preamble = 0;
 
-    uint32_t tick_rate = 100*1000*100;
+    uint32_t idle_max = 120*1000*100;
     timer tick;
     uint32_t next_tick;
     tick :> next_tick;
@@ -39,14 +39,14 @@ void infrared_task(in port sensor, interface infrared_if server remote) {
             break;
 
         case tick when timerafter(next_tick) :> void:
-            next_tick += tick_rate;
+            next_tick += idle_max;
             can_repeat = buffer_count = preamble = 0;
             break;
 
         case sensor when pinsneq(low_pulse) :> low_pulse:
             uint32_t now;
             tick :> now;
-            next_tick = now + tick_rate;
+            next_tick = now + idle_max;
             uint32_t width = (now - last_edge)/100;
             last_edge = now;
             if ( !low_pulse ) { // look for preamble mark
@@ -68,9 +68,9 @@ void infrared_task(in port sensor, interface infrared_if server remote) {
                 break;
             case 2:  // look for 32 data bits
                 buffer >>=1;
-                if ( (1800<width) && (2700>width) ) {
+                if ( (1350<width) && (2025>width) ) {
                     buffer |= 0x80000000;
-                } else if ( (900>=width) || (1350<=width) ) {
+                } else if ( (450>=width) || (675<=width) ) {
                     preamble = 0;
                     break;
                 }
