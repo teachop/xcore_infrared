@@ -18,9 +18,7 @@
 void show_code_task(interface infrared_if client remote, interface seven_seg_if client display) {
     const uint8_t hex[] = "0123456789ABCDEF";
     uint32_t display_busy = 0;
-    uint8_t codeBuffer[3] = {0,0,0};
-    uint8_t text[] = "----";
-    uint32_t codes_ready = 0;
+    uint32_t counter = 0;
 
     while (1) {
         select {
@@ -28,15 +26,16 @@ void show_code_task(interface infrared_if client remote, interface seven_seg_if 
             display_busy = 0;
             break;
         case remote.codeReady():
-            codes_ready = remote.getCodes(codeBuffer);
+            uint8_t codeBuffer[3];
+            uint32_t codes_ready = remote.getCodes(codeBuffer);
             if ( codes_ready && !display_busy ) {
-                text[0] = hex[codeBuffer[1]>>4]; // address lsb
-                text[1] = hex[codeBuffer[1]&15];
+                uint8_t text[4];
+                text[0] = ++counter%10 + '0';
+                text[1] = '-';
                 text[2] = hex[codeBuffer[0]>>4]; // code
                 text[3] = hex[codeBuffer[0]&15];
-                display_busy = 1;
                 display.setText( text );
-                codes_ready = 0;
+                display_busy = 1;
             }
             break;
         }
@@ -53,6 +52,8 @@ port txd_pin = XS1_PORT_4C; // j7.5 [6, 7, 8]
 int main() {
     interface seven_seg_if display;
     interface infrared_if remote;
+
+    set_port_inv(sensor_pin); // sensor is inverted
 
     par {
         show_code_task(remote, display);
