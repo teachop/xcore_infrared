@@ -29,6 +29,7 @@ void infrared_task(in port sensor, interface infrared_if server remote) {
     while( 1 ) {
         select {
         case remote.getCodes(uint8_t (&codes)[3]) -> uint32_t return_val:
+            // read new data, return 0 if none available
             return_val = fresh_codes;
             if ( fresh_codes ) {
                 codes[0] = ir_codes[0]; // actual code
@@ -39,11 +40,13 @@ void infrared_task(in port sensor, interface infrared_if server remote) {
             break;
 
         case tick when timerafter(next_tick) :> void:
+            // timeout, clean up
             next_tick += idle_max;
             can_repeat = buffer_count = preamble = 0;
             break;
 
         case sensor when pinsneq(low_pulse) :> low_pulse:
+            // sensor signal changed state
             uint32_t now;
             tick :> now;
             next_tick = now + idle_max;
@@ -82,6 +85,7 @@ void infrared_task(in port sensor, interface infrared_if server remote) {
                     ir_codes[0] = buffer; // ir code
                     buffer>>=8;
                     uint8_t check = ~buffer;
+                    // accept any address at the driver level
                     can_repeat = fresh_codes = (check==ir_codes[0]);
                     if ( fresh_codes ) {
                         remote.codeReady();

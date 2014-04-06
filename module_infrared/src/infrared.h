@@ -6,35 +6,18 @@
 #ifndef __INFRARED_H__
 #define __INFRARED_H__
 
-// Adafruit Mini IR Remote code map
-#define IRED_VOL_DOWN 0x00
-#define IRED_PAUSE    0x00
-#define IRED_VOL_UP   0x00
-
-#define IRED_SETUP    0x00
-#define IRED_UP       0x00
-#define IRED_STOP     0x00
-
-#define IRED_LEFT     0x00
-#define IRED_ENTER    0x00
-#define IRED_RIGHT    0x00
-
-#define IRED_0        0x00
-#define IRED_DOWN     0x00
-#define IRED_BACK     0x00
-
-#define IRED_1        0x00
-#define IRED_2        0x00
-#define IRED_3        0x00
-
-#define IRED_4        0x00
-#define IRED_5        0x00
-#define IRED_6        0x00
-
-#define IRED_7        0x00
-#define IRED_8        0x00
-#define IRED_9        0x00
-
+// Adafruit Mini IR Remote
+#define IR_ADDR_LO 0x00
+#define IR_ADDR_HI 0xbf
+enum{
+    IR_VOL_M, IR_PAUSE, IR_VOL_P, IR_NA1,
+    IR_SETUP, IR_UP,    IR_STOP,  IR_NA2,
+    IR_LEFT,  IR_ENTER, IR_RIGHT, IR_NA3,
+    IR_0,     IR_DOWN,  IR_BACK,  IR_NA4,
+    IR_1,     IR_2,     IR_3,     IR_NA5,
+    IR_4,     IR_5,     IR_6,     IR_NA6,
+    IR_7,     IR_8,     IR_9,     IR_NA7
+};
 
 // driver interface
 interface infrared_if {
@@ -42,7 +25,7 @@ interface infrared_if {
     // notify client data available
     [[notification]] slave void codeReady(void);
 
-    // read codes
+    // read codes: 0=code, 1=address low, 2=address high
     [[clears_notification]] uint32_t getCodes(uint8_t (&codes)[3]);
 };
 
