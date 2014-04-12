@@ -29,6 +29,9 @@ interface infrared_if {
     [[clears_notification]] uint32_t getCodes(uint8_t (&codes)[3]);
 };
 
+// while infrared_task satisfies combinable requirements
+// be aware stable IR pulse measurement is time sensitive
+[[combinable]]
 void infrared_task(in port sensor, interface infrared_if server remote);
 
 

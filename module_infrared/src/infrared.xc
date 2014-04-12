@@ -11,6 +11,7 @@
 // ---------------------------------------------------------
 // infrared_task - Infrared Remote driver
 //
+[[combinable]]
 void infrared_task(in port sensor, interface infrared_if server remote) {
     uint32_t low_pulse = 0;
     uint8_t ir_codes[3] = {0,0,0};
