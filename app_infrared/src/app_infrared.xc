@@ -66,7 +66,7 @@ int main() {
     par {
         show_code_task(remote, display);
         infrared_task(sensor_pin, remote);
-        seven_seg_task(txd_pin, display);
+        seven_seg_task(txd_pin, 9600, display);
     }
 
     return 0;
